@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     header:{
         position: "absolute",
         top: Constants.statusBarHeight,
-        width: "80%",
         height: "8%",
         justifyContent: "center",
         alignItems: "center",

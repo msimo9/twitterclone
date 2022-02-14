@@ -1,14 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import styles from '../styles/HomeStyle'
+import HeaderWithLogo from '../components/HeaderWithLogo'
+import HeaderProfilePicture from '../components/HeaderProfilePicture'
 
 const HomeScreen = () => {
+
+  
+
   return (
-    <View>
-      <Text>HomeScreen</Text>
+    <View style={styles.container}>
+        <HeaderProfilePicture />
+        <HeaderWithLogo />
     </View>
   )
 }
 
-export default HomeScreen
-
-const styles = StyleSheet.create({})
+export default HomeScreen;

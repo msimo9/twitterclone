@@ -5,17 +5,8 @@ import styles from '../styles/SignUpStyle';
 import HeaderWithLogo from '../components/HeaderWithLogo';
 import SignUpInput from '../components/SignUpInput';
 import ContinueButton from '../components/ContinueButton';
+import CancelButton from '../components/CancelButton';
 
-const CancelButton = (props) => {
-  return(
-    <TouchableOpacity
-      onPress={() => props.navigation.goBack()}
-      style={styles.cancelButton}
-    >
-      <Text style={styles.cancelButtonText}>Cancel</Text>
-    </TouchableOpacity>
-  )
-}
 
 const MainContent = (props) => {
   

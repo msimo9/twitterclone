@@ -10,6 +10,8 @@ const SignUpInput = (props) => {
         value={props.value}
         onChangeText={props.action}
         style={styles.textInput}
+        autoCapitalize="none"
+        secureTextEntry={props.password}
     />
   )
 }
