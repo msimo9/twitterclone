@@ -14,6 +14,9 @@ import InitialScreen from '../screens/InitialScreen';
 import MessageScreen from '../screens/MessagesScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import LogInScreen from '../screens/LogInScreen';
+import CustomDrawer from '../components/CustomDrawer';
+
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 const Stack = createStackNavigator()
 

@@ -4,13 +4,15 @@ import styles from '../styles/HomeStyle'
 import HeaderWithLogo from '../components/HeaderWithLogo'
 import HeaderProfilePicture from '../components/HeaderProfilePicture'
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
 
   
 
   return (
     <View style={styles.container}>
-        <HeaderProfilePicture />
+        <HeaderProfilePicture
+          navigation={navigation}
+        />
         <HeaderWithLogo />
     </View>
   )

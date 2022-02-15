@@ -7,6 +7,8 @@ const initalState = {
     username: "it works!",
     uid: "",
     profilePicture: 'https://pbs.twimg.com/profile_images/1329670103026298880/7pRawxKB_400x400.jpg',
+    drawer: false,
+    profileType: "public",
 }
 
 export const addTweet = () => ({

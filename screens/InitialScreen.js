@@ -40,6 +40,7 @@ const Footer = (props) => {
 }
 
 const InitialScreen = ({navigation}) => {
+
   return (
     <View style={styles.container}>
       <HeaderWithLogo />

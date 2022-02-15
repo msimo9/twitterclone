@@ -1,17 +1,37 @@
 import {Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import styles from '../styles/LogInStyle';
 import HeaderWithLogo from '../components/HeaderWithLogo';
 import CancelButton from '../components/CancelButton';
 import SignUpInput from '../components/SignUpInput';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+
+const userLogIn = (username, password, navigation) => {
+
+  const auth = getAuth();
+
+  signInWithEmailAndPassword(auth, username, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      navigation.navigate("Tab");
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+    });
+}
 
 const Footer = (props) => {
   return(
     <View style={props.valid ? styles.buttonContainerActive : styles.buttonContainerInactive}>
       <TouchableOpacity
-        onPress={props.login ? ()=>props.navigation.navigate("Tab") : props.valid ? props.action : null }
+        onPress={props.login ? () => userLogIn(props.username,props.password,props.navigation) : props.valid ? props.action : null }
         style={styles.nextButton}
       >
         {props.login ? <Text style={styles.nextTitle}>Log In</Text> : <Text style={styles.nextTitle}>Next</Text>}
@@ -27,7 +47,6 @@ const LogInScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [passwordField, setShowPasswordField] = useState(false);
   const [secureText, setSecureText] = useState(true);
-  console.log(passwordField);
   
 
   const checkUsername = (value) => {
@@ -42,8 +61,18 @@ const LogInScreen = ({navigation}) => {
 
   const showPasswordField = () => {
     setShowPasswordField(true);
-    console.log("---",passwordField);
   }
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if(user){
+            const uid = user.uid;
+            navigation.replace('Tab');
+        }
+    })
+    return unsubscribe;
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -72,7 +101,7 @@ const LogInScreen = ({navigation}) => {
           </Text>
         }
         
-        <Footer valid={usernameValid} login={passwordField} action={showPasswordField} navigation={navigation}/>
+        <Footer valid={usernameValid} login={passwordField} action={showPasswordField} navigation={navigation} username={username} password={password}/>
 
         <Text style={styles.forgotPassword}>Forgot password?</Text>
       </View>
