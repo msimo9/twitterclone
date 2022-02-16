@@ -9,12 +9,17 @@ import SignUpInput from '../components/SignUpInput';
 import ContinueButton from '../components/ContinueButton';
 import CancelButton from '../components/CancelButton';
 
-export const userSignUp = (email, password, fullName, navigation) => {
+import { saveUID } from '../redux/redux';
+import { useDispatch } from 'react-redux';
+
+export const userSignUp = (email, password, fullName, navigation, callback) => {
   const auth = getAuth();
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
+      const uid = user.uid;
+      callback(uid)
       alert("Dear ", fullName, ", you signed up successfuly!");
       navigation.navigate("Tab");
       // ...
@@ -44,6 +49,10 @@ const MainContent = (props) => {
   const [allValid, setAllValid] = useState(false);
   const [showPasswordField, setShowPasswordField] = useState(false);
 
+  const dispatch = useDispatch();
+  const saveID = (uid) => {
+    dispatch(saveUID(uid));
+  }
 
   const checkValidation = () => {
     if(nameValid && contactValid && dateBirthValid){
@@ -111,7 +120,7 @@ const MainContent = (props) => {
       <SignUpInput placeholder={"Email"} value={username} action={value => setUsername(value)}/>
       <SignUpInput placeholder={"Password"} value={password} action={value => setPassword(value)} password={true}/>
 
-      <ContinueButton text={"Sign Up"} active={allValid && showPasswordField ? true : false} action={() => allValid && showPasswordField? userSignUp(username, password, name, props.navigation) : null} />
+      <ContinueButton text={"Sign Up"} active={allValid && showPasswordField ? true : false} action={() => allValid && showPasswordField? userSignUp(username, password, name, props.navigation, saveID) : null} />
     </KeyboardAvoidingView>
   );
 }

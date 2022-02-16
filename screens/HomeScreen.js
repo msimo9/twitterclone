@@ -3,6 +3,7 @@ import React from 'react'
 import styles from '../styles/HomeStyle'
 import HeaderWithLogo from '../components/HeaderWithLogo'
 import HeaderProfilePicture from '../components/HeaderProfilePicture'
+import AddTweetButton from '../components/AddTweetButton'
 
 const HomeScreen = ({navigation}) => {
 
@@ -14,6 +15,8 @@ const HomeScreen = ({navigation}) => {
           navigation={navigation}
         />
         <HeaderWithLogo />
+
+        <AddTweetButton navigation={navigation}/>
     </View>
   )
 }

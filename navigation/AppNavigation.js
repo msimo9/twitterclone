@@ -15,6 +15,7 @@ import MessageScreen from '../screens/MessagesScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import LogInScreen from '../screens/LogInScreen';
 import CustomDrawer from '../components/CustomDrawer';
+import AddTweet from '../screens/AddTweet';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
@@ -31,6 +32,8 @@ const MainStackNavigator = () => {
             <Stack.Screen name={"SignUp"} component={SignUpScreen} />
             <Stack.Screen name={"LogIn"} component={LogInScreen} />
             <Stack.Screen name={"Tab"} component={MainTabNavigator} />
+            <Stack.Screen name={"Drawer"} component={CustomDrawer} />
+            <Stack.Screen name={"Add"} component={AddTweet} />
         </Stack.Navigator>
     )
 }

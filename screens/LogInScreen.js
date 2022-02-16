@@ -7,8 +7,11 @@ import CancelButton from '../components/CancelButton';
 import SignUpInput from '../components/SignUpInput';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+import {app} from '../firebase/firebase'
+import { saveUID } from '../redux/redux';
+import { useDispatch } from 'react-redux';
 
-const userLogIn = (username, password, navigation) => {
+const userLogIn = (username, password, navigation, callback) => {
 
   const auth = getAuth();
 
@@ -16,6 +19,8 @@ const userLogIn = (username, password, navigation) => {
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
+      const uid = user.uid;
+      callback(uid)
       navigation.navigate("Tab");
       // ...
     })
@@ -28,10 +33,16 @@ const userLogIn = (username, password, navigation) => {
 }
 
 const Footer = (props) => {
+
+  const dispatch = useDispatch();
+  const saveID = (uid) => {
+    dispatch(saveUID(uid));
+  }
+
   return(
     <View style={props.valid ? styles.buttonContainerActive : styles.buttonContainerInactive}>
       <TouchableOpacity
-        onPress={props.login ? () => userLogIn(props.username,props.password,props.navigation) : props.valid ? props.action : null }
+        onPress={props.login ? () => userLogIn(props.username,props.password,props.navigation, saveID) : props.valid ? props.action : null }
         style={styles.nextButton}
       >
         {props.login ? <Text style={styles.nextTitle}>Log In</Text> : <Text style={styles.nextTitle}>Next</Text>}
