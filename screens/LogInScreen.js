@@ -73,12 +73,13 @@ const LogInScreen = ({navigation}) => {
   const showPasswordField = () => {
     setShowPasswordField(true);
   }
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
         if(user){
             const uid = user.uid;
+            dispatch(saveUID(uid));
             navigation.replace('Tab');
         }
     })

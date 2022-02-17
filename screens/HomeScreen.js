@@ -4,6 +4,9 @@ import styles from '../styles/HomeStyle'
 import HeaderWithLogo from '../components/HeaderWithLogo'
 import HeaderProfilePicture from '../components/HeaderProfilePicture'
 import AddTweetButton from '../components/AddTweetButton'
+import TweetsFeed from '../components/TweetsFeed'
+
+
 
 const HomeScreen = ({navigation}) => {
 
@@ -15,6 +18,8 @@ const HomeScreen = ({navigation}) => {
           navigation={navigation}
         />
         <HeaderWithLogo />
+
+        <TweetsFeed />
 
         <AddTweetButton navigation={navigation}/>
     </View>
