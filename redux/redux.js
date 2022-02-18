@@ -2,12 +2,13 @@ import {createStore} from 'redux';
 
 export const ADD_TWEET = 'ADD_TWEET';
 export const SAVE_UID = 'SAVE_UID';
+export const SAVE_PHOTO = 'SAVE_PHOTO';
 
 const initalState = {
     tweets: [],
     username: "it works!",
     uid: "",
-    profilePicture: 'https://pbs.twimg.com/profile_images/1329670103026298880/7pRawxKB_400x400.jpg',
+    profilePicture: 'https://firebasestorage.googleapis.com/v0/b/twitterclone-cbd8e.appspot.com/o/default_profile_400x400.png?alt=media&token=036b7057-da16-4269-a2d9-a4e767b31772',
     drawer: false,
     profileType: "public",
 }
@@ -22,6 +23,11 @@ export const saveUID = (uid) => ({
     payload: {uid}
 });
 
+export const savePhoto = (url) => ({
+    type: SAVE_PHOTO,
+    payload: {url}
+});
+
 export const rootReducer = (state = initalState, action) => {
     switch (action.type) {
         case ADD_TWEET:
@@ -34,6 +40,12 @@ export const rootReducer = (state = initalState, action) => {
                 ...state,
                 uid: action.payload.uid,
             }
+        case SAVE_PHOTO:{
+            return{
+                ...state,
+                profilePicture: action.payload.url,
+            }
+        }
         default:
             return state;
     }

@@ -8,10 +8,11 @@ import SignUpInput from '../components/SignUpInput';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
 import {app} from '../firebase/firebase'
-import { saveUID } from '../redux/redux';
+import { saveUID, savePhoto} from '../redux/redux';
 import { useDispatch } from 'react-redux';
 
-const userLogIn = (username, password, navigation, callback) => {
+
+const userLogIn = async (username, password, navigation, callback) => {
 
   const auth = getAuth();
 
