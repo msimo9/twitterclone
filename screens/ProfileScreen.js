@@ -3,11 +3,12 @@ import React, {useState} from 'react'
 import styles from '../styles/ProfileStyle';
 import { useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import EditProfile from '../components/ModalScreens/EditProfile';
 
 const Header = (props) => {
   return(
     <View
-      style={[styles.header, props.height > 115 ? {height: props.height,} : {height: 115-(150-115)+props.offset, position: "absolute", top: 0, zIndex: 99}]}
+      style={[styles.header, props.offset<50 ? {marginTop: -props.offset} : {marginTop: -50}]}
     >
       <View style={styles.headerButtons}>
         <TouchableOpacity
@@ -29,28 +30,23 @@ const Header = (props) => {
 
 const ProfileScreen = ({navigation}) => {
 
-  const initialHeaderSize = 150;
   const initialImageSize = 80;
-  const initialOpacity = 1;
   const [imageSize, setImageSize] = useState(initialImageSize);
-  const [imageOpacity, setImageOpacity] = useState(initialOpacity);
-  const [headerSize, setHeaderSize] = useState(initialHeaderSize);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [modalVisibility, setModalVisibility] = useState(false);
 
   const handleScroll = (e) => {
     const offsetY = e.nativeEvent.contentOffset.y
     setScrollOffset(offsetY);
-    console.log(offsetY);
     if(offsetY < 40 && offsetY >= 0){
-      //console.log("-------");
       setImageSize(initialImageSize - offsetY)
-      setHeaderSize(initialHeaderSize - offsetY);
-      setImageOpacity(initialOpacity - (offsetY/100))
     }else if(offsetY === 0){
       setImageSize(initialImageSize);
-      setHeaderSize(initialHeaderSize);
-      setImageOpacity(initialOpacity)
     }
+  }
+
+  const toggleModal = () => {
+    setModalVisibility(!modalVisibility);
   }
 
   const profilePicture = useSelector(state => state.profilePicture);
@@ -59,18 +55,33 @@ const ProfileScreen = ({navigation}) => {
       style={styles.container}
       contentContainerStyle={{flex: 1}}
       onScroll={handleScroll}
-      scrollEventThrottle={10}
+      scrollEventThrottle={16}
+      stickyHeaderIndices={[0]}
+      showsVerticalScrollIndicator={false}
     >
       <Header
-        height={headerSize}
         navigation={navigation}
         offset={scrollOffset}
       />
+      <View
+        style={[
+          styles.subHeader,
+          scrollOffset > 0 || scrollOffset < 0 ? {zIndex: 0} : {zIndex: 99} 
+        ]}>
       <Image
         resizeMode="contain"
-        style={[styles.profilePicture, {opacity:imageOpacity ,height: imageSize, width: imageSize, marginTop: -(imageSize/2),}]}
+        style={[styles.profilePicture,{height: imageSize, width: imageSize,   marginTop: -(imageSize/2)}]}
         source={{uri: profilePicture}}
       />
+
+      <TouchableOpacity
+        style={styles.editProfile}
+        onPress={() => toggleModal()}
+      >
+        <Text style={[styles.text]}>Edit profile</Text>
+      </TouchableOpacity>
+        {modalVisibility ? <EditProfile toggleModal={toggleModal} /> : null}
+      </View>
     </ScrollView>
   )
 }

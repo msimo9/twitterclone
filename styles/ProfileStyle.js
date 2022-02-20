@@ -7,7 +7,8 @@ const styles = StyleSheet.create({
         height: "100%",
     },
     text:{
-        color: "#FFFFFF"
+        color: "#FFFFFF",
+        fontWeight: "600"
     },
     header:{
         width: "100%",
@@ -15,12 +16,28 @@ const styles = StyleSheet.create({
         backgroundColor: "#1DA1F2",
         alignItems: "center",
     },
+    subHeader:{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "baseline",
+        paddingBottom: 20,
+    },
     profilePicture:{
         borderRadius: 40,
         borderColor: "#000000",
         borderWidth: 5,
         marginTop: -40,
         marginLeft: 20,
+    },
+    editProfile:{
+        borderColor: "#FFFFFF",
+        borderWidth: 0.5,
+        height: 30,
+        borderRadius: 15,
+        paddingHorizontal: 12,
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 20,
     },
     headerButtons:{
         justifyContent: "space-between",
