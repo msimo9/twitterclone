@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback} from 'react-native'
 import React, {useState} from 'react'
 import styles from '../styles/ProfileStyle';
 import { useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EditProfile from '../components/ModalScreens/EditProfile';
+import LightboxComponent from '../components/ModalScreens/LightboxComponent';
 
 const Header = (props) => {
   return(
@@ -12,12 +13,12 @@ const Header = (props) => {
     >
       <View style={styles.headerButtons}>
         <TouchableOpacity
-          style={styles.headerButton}
+          style={[styles.headerButton, props.modalVisibility ? {display: "none"} : null ]}
         >
           <Ionicons name={"arrow-back"} size={20} color={"#FFFFFF"} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.headerButton}
+          style={[styles.headerButton, props.modalVisibility ? {display: "none"} : null ]}
         >
           <Ionicons name={"search"} size={20} color={"#FFFFFF"} />
         </TouchableOpacity>
@@ -34,6 +35,7 @@ const ProfileScreen = ({navigation}) => {
   const [imageSize, setImageSize] = useState(initialImageSize);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [modalVisibility, setModalVisibility] = useState(false);
+  const [lightboxVisibility, setLightboxVisibility] = useState(false);
 
   const handleScroll = (e) => {
     const offsetY = e.nativeEvent.contentOffset.y
@@ -49,10 +51,15 @@ const ProfileScreen = ({navigation}) => {
     setModalVisibility(!modalVisibility);
   }
 
+  const toggleLightbox= () => {
+    console.log("do tukaj deluje")
+    setLightboxVisibility(!lightboxVisibility);
+  }
+
   const profilePicture = useSelector(state => state.profilePicture);
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, lightboxVisibility ? {} : null]}
       contentContainerStyle={{flex: 1}}
       onScroll={handleScroll}
       scrollEventThrottle={16}
@@ -62,17 +69,24 @@ const ProfileScreen = ({navigation}) => {
       <Header
         navigation={navigation}
         offset={scrollOffset}
+        modalVisibility={modalVisibility}
       />
       <View
         style={[
           styles.subHeader,
           scrollOffset > 0 || scrollOffset < 0 ? {zIndex: 0} : {zIndex: 99} 
         ]}>
-      <Image
-        resizeMode="contain"
-        style={[styles.profilePicture,{height: imageSize, width: imageSize,   marginTop: -(imageSize/2)}]}
-        source={{uri: profilePicture}}
-      />
+      
+      <TouchableWithoutFeedback
+        onPress={() => toggleLightbox()}
+      >
+        <Image
+          resizeMode="contain"
+          style={[styles.profilePicture,{height: imageSize, width: imageSize,   marginTop: -(imageSize/2)}]}
+          source={{uri: profilePicture}}
+        />
+      </TouchableWithoutFeedback>
+      {lightboxVisibility ? <LightboxComponent image={profilePicture} toggleModal={toggleLightbox} /> : null}
 
       <TouchableOpacity
         style={styles.editProfile}
