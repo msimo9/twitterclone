@@ -1,11 +1,20 @@
 import { StyleSheet, Text, View, TouchableOpacity, ProgressViewIOSComponent} from 'react-native'
 import React from 'react'
 import Constants from 'expo-constants';
+import { useDispatch } from 'react-redux';
+import { addTweet } from '../redux/redux';
 
 const ConfirmTweet = (props) => {
+
+  const dispatch = useDispatch();
+  
+  const addTweet1 = () => {
+    dispatch(addTweet());
+  }
+
   return (
     <TouchableOpacity
-        onPress={props.active ? ()=>props.callback() : null}
+        onPress={props.active ? () => {props.callback(); addTweet1()} : null}
         style={props.active ? styles.addTweetButtonActive : styles.addTweetButtonInactive}
     >
       <Text style={props.active ? styles.tweetText : styles.tweetTextInactive}>Tweet</Text>

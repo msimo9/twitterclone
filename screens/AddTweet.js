@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 
-const addTweetToFirestore = async(text, uid, navigation) => {
+const addTweetToFirestore = async(text, uid, navigation, callback) => {
     const d = new Date();
     const month = parseInt(d.getMonth())+1;
     const date = d.getDate() +". "+month +". "+ d.getFullYear();

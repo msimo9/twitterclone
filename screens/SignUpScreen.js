@@ -8,21 +8,35 @@ import HeaderWithLogo from '../components/HeaderWithLogo';
 import SignUpInput from '../components/SignUpInput';
 import ContinueButton from '../components/ContinueButton';
 import CancelButton from '../components/CancelButton';
-
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../firebase/firebase';
 import { saveUID } from '../redux/redux';
 import { useDispatch } from 'react-redux';
 
-export const userSignUp = (email, password, fullName, navigation, callback) => {
+export const userSignUp = (email, username, password, fullName, navigation, callback) => {
+
+  const saveAdditionalUserInfo = async(uid) => {
+      const docRef = await addDoc(collection(db, "userinfo"), {
+          id: Math.random(),
+          userID: uid,
+          email: email,
+          username: username,
+          fullName: fullName,
+          followers: 0,
+          following: 0,
+      });
+      console.log("Document written with ID: ", docRef.id);
+  }
+
   const auth = getAuth();
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed in 
       const user = userCredential.user;
       const uid = user.uid;
       callback(uid)
-      alert("Dear ", fullName, ", you signed up successfuly!");
+      alert("Dear ", username, ", you signed up successfuly!");
+      saveAdditionalUserInfo(uid);
       navigation.navigate("Tab");
-      // ...
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -48,6 +62,11 @@ const MainContent = (props) => {
   const [dateBirthValid, setDateBirthValid] = useState(false);
   const [allValid, setAllValid] = useState(false);
   const [showPasswordField, setShowPasswordField] = useState(false);
+  const [showAdditionalInfo, setAdditionalInfo] = useState(false);
+
+  const toggleAdditionalInfo = () => {
+    setAdditionalInfo(!showAdditionalInfo);
+  }
 
   const dispatch = useDispatch();
   const saveID = (uid) => {
@@ -117,10 +136,11 @@ const MainContent = (props) => {
 
       <Text style={styles.mainContentTitle}>Create your account</Text>
       
-      <SignUpInput placeholder={"Email"} value={username} action={value => setUsername(value)}/>
+      <SignUpInput placeholder={"Email"} value={contact} action={value => setContact(value)}/>
+      <SignUpInput placeholder={"Username"} value={username} action={value => setUsername(value)} password={false}/>
       <SignUpInput placeholder={"Password"} value={password} action={value => setPassword(value)} password={true}/>
 
-      <ContinueButton text={"Sign Up"} active={allValid && showPasswordField ? true : false} action={() => allValid && showPasswordField? userSignUp(username, password, name, props.navigation, saveID) : null} />
+      <ContinueButton text={"Sign Up"} active={allValid && showPasswordField ? true : false} action={() => allValid && showPasswordField? userSignUp(contact, username, password, name, props.navigation, saveID) : null} />
     </KeyboardAvoidingView>
   );
 }

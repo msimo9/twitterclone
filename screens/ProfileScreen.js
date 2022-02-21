@@ -14,6 +14,7 @@ const Header = (props) => {
       <View style={styles.headerButtons}>
         <TouchableOpacity
           style={[styles.headerButton, props.modalVisibility ? {display: "none"} : null ]}
+          onPress={() => props.navigation.goBack()}
         >
           <Ionicons name={"arrow-back"} size={20} color={"#FFFFFF"} />
         </TouchableOpacity>

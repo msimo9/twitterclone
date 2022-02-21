@@ -11,6 +11,7 @@ const initalState = {
     profilePicture: 'https://firebasestorage.googleapis.com/v0/b/twitterclone-cbd8e.appspot.com/o/default_profile_400x400.png?alt=media&token=036b7057-da16-4269-a2d9-a4e767b31772',
     drawer: false,
     profileType: "public",
+    tweetAdded: 0,
 }
 
 export const addTweet = () => ({
@@ -31,8 +32,11 @@ export const savePhoto = (url) => ({
 export const rootReducer = (state = initalState, action) => {
     switch (action.type) {
         case ADD_TWEET:
+            console.log("add tweet in react redux");
+            const newNumber = parseInt(state.tweetAdded) + 1;
             return{
                 ...state,
+                tweetAdded: newNumber,
             }
         case SAVE_UID:
             console.log("uid ", action.payload.uid, " saved!");

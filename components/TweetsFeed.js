@@ -4,12 +4,14 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import AppLoading from 'expo-app-loading';
 import Tweet from './Tweet';
+import { useSelector } from 'react-redux';
 
 const TweetsFeed = () => {
     
     const [isReady, setIsReady] = useState(false);
     const initialTweets = [];
     const [tweets, setTweets] = useState(initialTweets);
+    const tweetAdded = useSelector(state => state.tweetAdded);
 
 
     const getDataFromFirestore = async() => {
@@ -31,7 +33,7 @@ const TweetsFeed = () => {
 
     useEffect(() => {
         getDataFromFirestore();
-    }, [isReady])
+    }, [isReady, tweetAdded]);
 
     
     if(isReady){

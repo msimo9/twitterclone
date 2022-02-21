@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '../styles/HomeStyle'
 import HeaderWithLogo from '../components/HeaderWithLogo'
 import HeaderProfilePicture from '../components/HeaderProfilePicture'
@@ -9,8 +9,6 @@ import TweetsFeed from '../components/TweetsFeed'
 
 
 const HomeScreen = ({navigation}) => {
-
-  
 
   return (
     <View style={styles.container}>
