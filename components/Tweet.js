@@ -2,10 +2,48 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { db } from '../firebase/firebase';
+import { useSelector } from 'react-redux';
 
 const Tweet = (props) => {
     const [isImageReady, setIsImageReady] = useState(false);
     const [image, setImage] = useState("");
+    const [isUserDataReady, setUserDataReady] = useState(false);
+    const [username, setUsername] = useState('');
+    const [fullname, setFullname] = useState('');
+    const tweetAdded = useSelector(state => state.tweetAdded);
+
+    //tweet age
+    const d = new Date();
+    let time = d.getTime();
+    let tweetAge = time - props.time_ms;
+    tweetAge = Math.floor(tweetAge/1000);
+    if(tweetAge <= 59) tweetAge += " s";
+    if(tweetAge > 59){
+        tweetAge = Math.floor(tweetAge/60);
+        if(tweetAge <= 59) tweetAge += " m";
+    }
+    if(tweetAge > 59){
+        tweetAge = Math.floor(tweetAge/60);
+        if(tweetAge <= 23) tweetAge += " h";
+    }
+    if(tweetAge > 23){
+        tweetAge = Math.floor(tweetAge/24);
+        tweetAge += " d";
+    }
+
+    const getUserData = async() => {
+        const querySnapshot = await getDocs(collection(db, "userinfo"));
+        querySnapshot.forEach((doc) => {
+            if(doc.data().userID === props.userID){
+                setUsername(doc.data().username);
+                console.log(username);
+                setFullname(doc.data().fullName);
+                console.log(fullname);
+            }
+        });
+    }
 
     const getProfilePicture = async() =>{
         const storage = getStorage();
@@ -19,14 +57,22 @@ const Tweet = (props) => {
 
     useEffect(() => {
         getProfilePicture();
-    },[isImageReady])
+    },[isImageReady, tweetAdded])
+
+    useEffect(() => {
+        getUserData();
+    },[isUserDataReady, tweetAdded])
     
     const searchString = "https://firebasestorage.googleapis.com/v0/b/twitterclone-cbd8e.appspot.com/o/" + props.userID + "%2FprofilePicture%2FprofilePhoto.jpg";
     return (
         <View style={styles.tweetContainer}>
             <Image source={{uri: image}} style={styles.image} />
             <View style={styles.contentContainer}>
-                <Text style={styles.itemText}>{props.date}</Text>
+                <View style={styles.authorInfo}>
+                    <Text style={[styles.itemText, {fontWeight: "bold"}]}>{fullname}</Text>
+                    <Text style={styles.username}>@{username}</Text>
+                    <Text style={styles.itemText}>{tweetAge}</Text>
+                </View>
                 <Text style={styles.itemText}>{props.text}</Text>
                 <View style={styles.interactionsContainer}>
                     <View style={styles.interactionView}>
@@ -61,6 +107,7 @@ const styles = StyleSheet.create({
     },
     itemText:{
         color: "#FFFFFF",
+        marginVertical: 3,
     },
     image:{
         width: 40,
@@ -85,5 +132,13 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         marginLeft: 5,
         marginRight: 15,
+    },
+    authorInfo:{
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    username:{
+        color: "gray",
+        marginHorizontal: 10,
     }
 })

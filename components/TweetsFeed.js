@@ -24,7 +24,7 @@ const TweetsFeed = () => {
             console.log(doc.data());
         });
         if(tweets_temp.length>=0){
-            setTweets(tweets_temp.reverse());
+            setTweets(tweets_temp.sort(function(a, b){return a.time_ms - b.time_ms}).reverse());
             setIsReady(true);
         }else{
             setTweets([{text: "No tweets found"}])
