@@ -19,9 +19,9 @@ const TweetsFeed = () => {
     
         const querySnapshot = await getDocs(collection(db, "tweets"));
         querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            tweets_temp.push(doc.data());
-            console.log(doc.data());
+            let obj = doc.data();
+            obj["documentID"] = doc.id;
+            tweets_temp.push(obj);
         });
         if(tweets_temp.length>=0){
             setTweets(tweets_temp.sort(function(a, b){return a.time_ms - b.time_ms}).reverse());
@@ -45,6 +45,7 @@ const TweetsFeed = () => {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <Tweet
+            id={item.documentID}
             date={item.date}
             text={item.text}
             time={item.time}

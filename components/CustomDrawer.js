@@ -4,47 +4,10 @@ import Constants from 'expo-constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector, useDispatch } from 'react-redux'
 import ProfileData from './ProfileData';
-import { savePhoto } from '../redux/redux';
-
 import LogOutButton from './LogOutButton';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
-import * as ImagePicker from 'expo-image-picker';
-import { getStorage, ref, uploadBytes, put } from "firebase/storage";
-import { auth } from 'firebase/auth';
 import DrawerElement from './DrawerElement';
 import sideMenuData from '../data/sideMenuData';
-
-
-
-const pickImage = async(uid) => {
-    // No permissions request is necessary for launching the image library
-    let file = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-  
-      //console.log(file.uri);
-  
-      if (!file.cancelled) {
-
-        //making a blob response out of picked image
-        const response = await fetch(file.uri);
-        const blob2 = await response.blob();
-
-        //add to firebase code
-        const imagePath = file.uri;
-        const storage = getStorage();
-        const imageFormat = imagePath.substring(imagePath.length-3);
-        var storageRef = ref(storage, uid + '/profilePicture/profilePhoto.'+imageFormat);
-
-        uploadBytes(storageRef, blob2).then((snapshot) => {
-            console.log('Profile photo successfuly uploaded :)');
-        });
-      }
-}
 
 const CustomDrawer = (props) => {
     const profilePicture = useSelector(state => state.profilePicture);
@@ -69,7 +32,6 @@ const CustomDrawer = (props) => {
                 
                 <ProfileData />
 
-                <TouchableOpacity onPress={() => pickImage(uid)}><Text style={{color: "white"}}>ADD</Text></TouchableOpacity>
                 
                 {
                     sideMenuData.map((item) => {

@@ -8,7 +8,7 @@ import HeaderWithLogo from '../components/HeaderWithLogo';
 import SignUpInput from '../components/SignUpInput';
 import ContinueButton from '../components/ContinueButton';
 import CancelButton from '../components/CancelButton';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, setDoc} from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import { saveUID } from '../redux/redux';
 import { useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 export const userSignUp = (email, username, password, fullName, navigation, callback) => {
 
   const saveAdditionalUserInfo = async(uid) => {
-      const docRef = await addDoc(collection(db, "userinfo"), {
+      const docRef = await setDoc(doc(db, "userinfo", uid), {
           id: Math.random(),
           userID: uid,
           email: email,
@@ -83,9 +83,8 @@ const MainContent = (props) => {
 
   const checkName = (value) => {
     setName(value);
-
-    var regName = new RegExp(/^([\w]{3,})+\s+([\w\s]{3,})+$/i);
-    if(regName.test(value)){
+    const arr = value.split(" ");
+    if(arr.length>=2 && arr[0].length >= 2 && arr[1].length >= 2){
       setNameValid(true);
     }else{
       setNameValid(false);

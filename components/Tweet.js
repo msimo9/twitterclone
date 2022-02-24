@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import { useSelector } from 'react-redux';
+import SocialInteractions from './SocialInteractions';
 
 const Tweet = (props) => {
     const [isImageReady, setIsImageReady] = useState(false);
@@ -13,7 +13,6 @@ const Tweet = (props) => {
     const [username, setUsername] = useState('');
     const [fullname, setFullname] = useState('');
     const tweetAdded = useSelector(state => state.tweetAdded);
-
     //tweet age
     const d = new Date();
     let time = d.getTime();
@@ -34,15 +33,18 @@ const Tweet = (props) => {
     }
 
     const getUserData = async() => {
-        const querySnapshot = await getDocs(collection(db, "userinfo"));
-        querySnapshot.forEach((doc) => {
-            if(doc.data().userID === props.userID){
-                setUsername(doc.data().username);
-                console.log(username);
-                setFullname(doc.data().fullName);
-                console.log(fullname);
-            }
-        });
+        const docRef = doc(db, "userinfo", props.userID);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log(docSnap.data());
+            setUsername(docSnap.data().username);
+            setFullname(docSnap.data().fullName);
+        } else {
+        // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+
     }
 
     const getProfilePicture = async() =>{
@@ -74,20 +76,9 @@ const Tweet = (props) => {
                     <Text style={styles.itemText}>{tweetAge}</Text>
                 </View>
                 <Text style={styles.itemText}>{props.text}</Text>
-                <View style={styles.interactionsContainer}>
-                    <View style={styles.interactionView}>
-                    <Ionicons name={"chatbubble-outline"} size={16} color={"#FFFFFF"} />
-                    <Text style={styles.interactionText}>{Math.floor(Math.random() * 1000 + 100)}</Text>
-                    </View>
-                    <View style={styles.interactionView}>
-                    <Ionicons name={"repeat"} size={16} color={"#FFFFFF"} />
-                    <Text style={styles.interactionText}>{Math.floor(Math.random() * 1000 + 100)}</Text>
-                    </View>
-                    <View style={styles.interactionView}>
-                    <Ionicons name={"heart-outline"} size={16} color={"#FFFFFF"} />
-                    <Text style={styles.interactionText}>{Math.floor(Math.random() * 1000 + 100)}</Text>
-                    </View>
-                </View>
+                
+                <SocialInteractions id={props.id} />
+
             </View>
         </View>
     )
@@ -120,19 +111,7 @@ const styles = StyleSheet.create({
     contentContainer:{
 
     },
-    interactionsContainer:{
-        flexDirection: "row",
-        justifyContent:"space-evenly",
-        marginTop: 10,
-    },
-    interactionView:{
-        flexDirection: "row"
-    },
-    interactionText:{
-        color: "#FFFFFF",
-        marginLeft: 5,
-        marginRight: 15,
-    },
+    
     authorInfo:{
         flexDirection: "row",
         alignItems: "center",

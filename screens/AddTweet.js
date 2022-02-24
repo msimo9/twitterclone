@@ -22,6 +22,9 @@ const addTweetToFirestore = async(text, uid, navigation, callback) => {
         date: date,
         time: timeFormat,
         time_ms: time,
+        comments: 0,
+        likes: 0,
+        retweets: 0,
     });
     console.log("Document written with ID: ", docRef.id);
     navigation.navigate("Home");
