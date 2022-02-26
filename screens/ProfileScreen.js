@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EditProfile from '../components/ModalScreens/EditProfile';
 import LightboxComponent from '../components/ModalScreens/LightboxComponent';
+import TweetsFeed from '../components/TweetsFeed';
 
 const Header = (props) => {
   return(
@@ -56,10 +57,10 @@ const ProfileScreen = ({navigation}) => {
     console.log("do tukaj deluje")
     setLightboxVisibility(!lightboxVisibility);
   }
-
+  const userID = useSelector(state => state.uid);
   const profilePicture = useSelector(state => state.profilePicture);
   return (
-    <ScrollView
+    <View
       style={[styles.container, lightboxVisibility ? {} : null]}
       contentContainerStyle={{flex: 1}}
       onScroll={handleScroll}
@@ -97,7 +98,11 @@ const ProfileScreen = ({navigation}) => {
       </TouchableOpacity>
         {modalVisibility ? <EditProfile toggleModal={toggleModal} /> : null}
       </View>
-    </ScrollView>
+
+      <View>
+      <TweetsFeed userID={userID} />
+      </View>
+    </View>
   )
 }
 

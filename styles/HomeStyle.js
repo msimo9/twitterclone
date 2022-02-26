@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#000000",
         alignItems: "center",
+        paddingTop: "30%",
     },
 })
 

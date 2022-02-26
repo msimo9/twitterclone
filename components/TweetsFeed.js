@@ -6,7 +6,7 @@ import AppLoading from 'expo-app-loading';
 import Tweet from './Tweet';
 import { useSelector } from 'react-redux';
 
-const TweetsFeed = () => {
+const TweetsFeed = (props) => {
     
     const [isReady, setIsReady] = useState(false);
     const initialTweets = [];
@@ -43,16 +43,32 @@ const TweetsFeed = () => {
         contentContainerStyle={{paddingBottom: "20%"}}
         data={tweets}
         keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <Tweet
-            id={item.documentID}
-            date={item.date}
-            text={item.text}
-            time={item.time}
-            userID={item.userID}
-            time_ms={item.time_ms}
-          />
-        )}
+        renderItem={({item}) => {
+        if(props.userID){
+            if(props.userID === item.userID)
+            return(
+                <Tweet
+                    id={item.documentID}
+                    date={item.date}
+                    text={item.text}
+                    time={item.time}
+                    userID={item.userID}
+                    time_ms={item.time_ms}
+                />
+            )
+        }else{
+            return(
+            <Tweet
+                id={item.documentID}
+                date={item.date}
+                text={item.text}
+                time={item.time}
+                userID={item.userID}
+                time_ms={item.time_ms}
+                />
+            )
+        }
+        }}
       />
     )
     }else{
@@ -67,7 +83,6 @@ export default TweetsFeed;
 const styles = StyleSheet.create({
     container:{
         width: "100%",
-        marginTop: "30%",
         borderColor: "#FFFFFF",
     },
 })

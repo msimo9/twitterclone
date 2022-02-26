@@ -24,6 +24,11 @@ export const userSignUp = (email, username, password, fullName, navigation, call
           fullName: fullName,
           followers: 0,
           following: 0,
+          socialInteractions:{
+            comments: [],
+            retweets: [],
+            likes: [],
+          }
       });
       console.log("Document written with ID: ", docRef.id);
   }

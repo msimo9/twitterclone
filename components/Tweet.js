@@ -37,7 +37,6 @@ const Tweet = (props) => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            console.log(docSnap.data());
             setUsername(docSnap.data().username);
             setFullname(docSnap.data().fullName);
         } else {

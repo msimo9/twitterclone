@@ -22,8 +22,6 @@ const HeaderProfilePicture = (props) => {
     const sampleProfilePhoto = "https://firebasestorage.googleapis.com/v0/b/twitterclone-cbd8e.appspot.com/o/default_profile_400x400.png?alt=media&token=036b7057-da16-4269-a2d9-a4e767b31772";
     const profilePhotoUrl = await getDownloadURL(ref(storage, uid+'/profilePicture/profilePhoto.jpg'));
     if(profilePhotoUrl.length > 0){
-      console.log("Profile photo url: ", profilePhotoUrl);
-      console.log("Profile photo url length: ", profilePhotoUrl.length);
       setIsReady(true);
       setImage(profilePhotoUrl);
       dispatch(savePhoto(profilePhotoUrl));
