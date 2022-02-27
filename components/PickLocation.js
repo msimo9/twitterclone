@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import MapView from 'react-native-maps'
 import { Marker } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,6 +16,14 @@ const MapHeader = ({toggleMap, populateLocationField}) => {
     )
 }
 
+const Footer = ({markerLabel}) => {
+    return(
+        <View style={styles.footer}>
+            <Text style={styles.text}>Location: {markerLabel.substring(0, 25)} ...</Text>
+        </View>
+    )
+}
+
 const PickLocation = ({toggleMap, populateLocationField}) => {
 
     const initialMarker = {};
@@ -23,21 +31,11 @@ const PickLocation = ({toggleMap, populateLocationField}) => {
     const [markerLabel, setMarkerLabel] = useState("");
 
     const handleTouch = (e) => {
-
         const myApiKey = "h_A8WPJtlUKyomGoVLRs5UV_8PYbD2pabNEvTotYpjs";
-
         const markerPosition = e.nativeEvent.coordinate;
-
         const lat = e.nativeEvent.coordinate.latitude;
         const lng = e.nativeEvent.coordinate.longitude;
-
-        const myPosition = {
-            lat: lat,
-            lng: lng
-        };
-
         const url = `https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?apiKey=${myApiKey}&mode=retrieveAddresses&prox=${lat},${lng}`;
-
         fetch(url)
         .then((response) => response.json())
         .then((response) => {
@@ -47,8 +45,6 @@ const PickLocation = ({toggleMap, populateLocationField}) => {
         .catch((error) => {
             console.error(error);
         });
-
-
         setMarker(markerPosition);
     }
 
@@ -68,10 +64,11 @@ const PickLocation = ({toggleMap, populateLocationField}) => {
                 <Marker
                     key={Math.random()}
                     coordinate={marker}
-                    title={"Your desired location: "}
-                    description={markerLabel}
+                    isPreselected={true}
+                    pinColor={"#1DA1F2"}
                 />
             </MapView>
+            <Footer markerLabel={markerLabel}/>
         </View>
     )
 }
@@ -81,10 +78,10 @@ export default PickLocation
 const styles = StyleSheet.create({
     map: {
         width: "100%",
-        height: "90%",
+        height: "80%",
     },
     mapContainer: {
-        marginTop: "10%",
+        marginTop: "0%",
         width: "100%",
         height: "100%",
     },
@@ -111,5 +108,13 @@ const styles = StyleSheet.create({
     text:{
         color: "#ffffff",
         fontWeight: "500",
-    }
+    },
+    footer:{
+        height: "10%",
+        backgroundColor: "#1DA1F2",
+        alignItems: "center",
+        justifyContent: "center",
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    },
 })

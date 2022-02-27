@@ -4,7 +4,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, put } from "firebase/storage";
+import { doc, updateDoc } from "firebase/firestore";
+import db from '../../firebase/firebase';
 import PickLocation from '../PickLocation';
+
+const updateDocument = async(data) => {
+    /*const userInfo= doc(db, "userinfo", "additionalUserInfo");
+    await updateDoc(userInfo, {
+        name:
+    });*/
+}
 
 export const editProfileData = [
     {name: "Name", placeholder: "Add your name", value: ""},
@@ -16,6 +25,7 @@ export const editProfileData = [
 const EditProfile = (props) => {
     const uid = useSelector(state => state.uid);
     const [mapVisibility, setMapVisibility] = useState(false);
+    const [initialChangesMade, setinitialChangesMade] = useState(false);
     const [changesMade, setChangesMade] = useState(false);
 
     const [userData, setUserData] = useState(editProfileData);
@@ -55,8 +65,9 @@ const EditProfile = (props) => {
 
     const handleTextChange = (field, value) => {
         console.log(field, " ", value);
-        setChangesMade(true);
+        setinitialChangesMade(true);
         let tempObj = userData;
+        console.log(tempObj)
         switch(field){
             case "Name":
                 tempObj[0]["value"] = value;
@@ -75,20 +86,25 @@ const EditProfile = (props) => {
                 tempObj[4]["value"] = value;
                 break;
         }
+        setChangesMade(!changesMade);
         setUserData(tempObj);
     }
 
     useEffect(() => {
 
-    }, [mapVisibility])
+    }, [mapVisibility, changesMade])
+
+    const handleOnSave = () => {
+        updateDocument(userData);
+        props.toggleModal;
+    }
 
     const populateLocationField = (address) => {
-        console.log("populateLocationField called");
-        console.log(address);
         const tempObj = userData;
         tempObj[2]["value"] = address;
         setUserData(tempObj);
         toggleMapVisibility();
+        setChangesMade(!changesMade);
     }
 
     const profilePicture = useSelector(state=>state.profilePicture);
@@ -108,8 +124,8 @@ const EditProfile = (props) => {
                     <View style={{width: 100/3+"%", justifyContent: "center", paddingLeft: "5%"}}><Text onPress={props.toggleModal} style={styles.cancelButton}>Cancel</Text></View>
                     <View style={{width: 100/3+"%", alignItems: "center", justifyContent: "center"}}><Text style={styles.title}>Edit profile</Text></View>
                     <View style={{width: 100/3+"%", justifyContent: "center", alignItems: "flex-end", paddingRight: "5%"}}>
-                        {changesMade ?
-                        <Text onPress={props.toggleModal} style={styles.cancelButton}>Save</Text>
+                        {initialChangesMade ?
+                        <Text onPress={() => handleOnSave()} style={styles.cancelButton}>Save</Text>
                         : null
                         }
                     </View>
