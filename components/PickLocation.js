@@ -1,31 +1,60 @@
-import { StyleSheet, Text, View, Dimensions} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
 import React, {useState} from 'react'
 import MapView from 'react-native-maps'
 import { Marker } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import Geocoder from 'react-native-geocoding';
+import axios from 'axios'
 
-const MapHeader = ({toggleMap}) => {
+
+const MapHeader = ({toggleMap, populateLocationField}) => {
     return(
     <View style={styles.header}>
         <TouchableOpacity onPress={toggleMap}><Text style={styles.text}>Cancel</Text></TouchableOpacity>
-        <Text style={styles.text}>Save</Text>
+        <TouchableOpacity onPress={populateLocationField}><Text style={styles.text}>Save</Text></TouchableOpacity>
     </View>
     )
 }
 
-const PickLocation = ({toggleMap}) => {
+const PickLocation = ({toggleMap, populateLocationField}) => {
 
     const initialMarker = {};
     const [marker, setMarker] = useState(initialMarker);
+    const [markerLabel, setMarkerLabel] = useState("");
 
     const handleTouch = (e) => {
-        setMarker(e.nativeEvent.coordinate);
+
+        const myApiKey = "h_A8WPJtlUKyomGoVLRs5UV_8PYbD2pabNEvTotYpjs";
+
+        const markerPosition = e.nativeEvent.coordinate;
+
+        const lat = e.nativeEvent.coordinate.latitude;
+        const lng = e.nativeEvent.coordinate.longitude;
+
+        const myPosition = {
+            lat: lat,
+            lng: lng
+        };
+
+        const url = `https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?apiKey=${myApiKey}&mode=retrieveAddresses&prox=${lat},${lng}`;
+
+        fetch(url)
+        .then((response) => response.json())
+        .then((response) => {
+            const address = response.Response.View[0].Result[0].Location.Address.Label;
+            setMarkerLabel(address)
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
+
+        setMarker(markerPosition);
     }
 
     return (
         <View style={styles.mapContainer}>
-            <MapHeader toggleMap={toggleMap} />
+            <MapHeader toggleMap={toggleMap} populateLocationField={() => populateLocationField(markerLabel)}/>
             <MapView
                 onPress={e => handleTouch(e)}
                 style={styles.map}
@@ -39,8 +68,8 @@ const PickLocation = ({toggleMap}) => {
                 <Marker
                     key={Math.random()}
                     coordinate={marker}
-                    title={"Your desired location"}
-                    description={"marker.description"}
+                    title={"Your desired location: "}
+                    description={markerLabel}
                 />
             </MapView>
         </View>

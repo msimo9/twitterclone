@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Modal, ScrollView, Image, TextInput, TouchableOpacity, Dimensions} from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,11 +7,11 @@ import { getStorage, ref, uploadBytes, put } from "firebase/storage";
 import PickLocation from '../PickLocation';
 
 export const editProfileData = [
-    {name: "Name", placeholder: "Add your name"},
-    {name: "Bio", placeholder: "Add a bio to your profile"},
-    {name: "Location", placeholder: "Add your location"},
-    {name: "Website", placeholder: "Add your website"},
-    {name: "Birth date", placeholder: "Add your date of birth"},
+    {name: "Name", placeholder: "Add your name", value: ""},
+    {name: "Bio", placeholder: "Add a bio to your profile", value: ""},
+    {name: "Location", placeholder: "Add your location", value: ""},
+    {name: "Website", placeholder: "Add your website", value: ""},
+    {name: "Birth date", placeholder: "Add your date of birth", value: ""},
 ];
 const EditProfile = (props) => {
     const uid = useSelector(state => state.uid);
@@ -78,6 +78,19 @@ const EditProfile = (props) => {
         setUserData(tempObj);
     }
 
+    useEffect(() => {
+
+    }, [mapVisibility])
+
+    const populateLocationField = (address) => {
+        console.log("populateLocationField called");
+        console.log(address);
+        const tempObj = userData;
+        tempObj[2]["value"] = address;
+        setUserData(tempObj);
+        toggleMapVisibility();
+    }
+
     const profilePicture = useSelector(state=>state.profilePicture);
     return (
         <Modal
@@ -138,6 +151,7 @@ const EditProfile = (props) => {
                                 style={styles.textInput}
                                 placeholderTextColor={"#D3D3D3"}
                                 multiline={item.name === "Bio" ? true : false}
+                                value={item.value}
                                 onChangeText={value => handleTextChange(item.name, value)}
                             />
                             {item.name === "Location" ?
@@ -153,7 +167,7 @@ const EditProfile = (props) => {
 
                     {
                         mapVisibility ?
-                            <PickLocation toggleMap={toggleMapVisibility}/>
+                            <PickLocation toggleMap={toggleMapVisibility} populateLocationField={populateLocationField} />
                         : null
                     }
                     
