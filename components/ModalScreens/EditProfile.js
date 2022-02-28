@@ -4,15 +4,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, put } from "firebase/storage";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getFirestore } from "firebase/firestore"; 
 import db from '../../firebase/firebase';
 import PickLocation from '../PickLocation';
 
-const updateDocument = async(data) => {
-    /*const userInfo= doc(db, "userinfo", "additionalUserInfo");
+const updateDocument = async(data, uid) => {
+    const db2 = getFirestore();
+    const userInfo= doc(db2, "userinfo", uid);
     await updateDoc(userInfo, {
-        name:
-    });*/
+        additionalUserInfo:{
+            name: data[0].value,
+            bio: data[1].value,
+            location: data[2].value,
+            website: data[3].value,
+            birthDate: data[4].value,
+        }
+    });
+
+
 }
 
 export const editProfileData = [
@@ -64,44 +73,31 @@ const EditProfile = (props) => {
     }
 
     const handleTextChange = (field, value) => {
-        console.log(field, " ", value);
         setinitialChangesMade(true);
-        let tempObj = userData;
-        console.log(tempObj)
-        switch(field){
-            case "Name":
-                tempObj[0]["value"] = value;
-                break;
-            case "Bio":
-                tempObj[1]["value"] = value;
-                break;
-            case "Location":
-                tempObj[2]["value"] = value;
-                setMapVisibility(true);
-                break;
-            case "Website":
-                tempObj[3]["value"] = value;
-                break;
-            case "Birth date":
-                tempObj[4]["value"] = value;
-                break;
+        let tempArr = userData;
+        switch(field.toLowerCase()){
+            case 'name': tempArr[0].value = value; break;
+            case 'bio': tempArr[1].value = value; break;
+            case 'location': tempArr[2].value = value; break;
+            case 'website': tempArr[3].value = value; break;
+            case 'birth date': tempArr[4].value = value; break;
         }
+        setUserData(tempArr);
         setChangesMade(!changesMade);
-        setUserData(tempObj);
     }
 
     useEffect(() => {
-
+        console.log("")
     }, [mapVisibility, changesMade])
 
     const handleOnSave = () => {
-        updateDocument(userData);
-        props.toggleModal;
+        updateDocument(userData, uid);
+        props.toggleModal();
     }
 
     const populateLocationField = (address) => {
         const tempObj = userData;
-        tempObj[2]["value"] = address;
+        tempObj[2].value=address;
         setUserData(tempObj);
         toggleMapVisibility();
         setChangesMade(!changesMade);
@@ -125,7 +121,14 @@ const EditProfile = (props) => {
                     <View style={{width: 100/3+"%", alignItems: "center", justifyContent: "center"}}><Text style={styles.title}>Edit profile</Text></View>
                     <View style={{width: 100/3+"%", justifyContent: "center", alignItems: "flex-end", paddingRight: "5%"}}>
                         {initialChangesMade ?
-                        <Text onPress={() => handleOnSave()} style={styles.cancelButton}>Save</Text>
+                            <TouchableOpacity onPress={() => handleOnSave()}>
+                                <Text
+                                    onPress={() => handleOnSave(userData)} 
+                                    style={styles.cancelButton}
+                                >
+                                    Save
+                                </Text>
+                            </TouchableOpacity>
                         : null
                         }
                     </View>
@@ -158,7 +161,7 @@ const EditProfile = (props) => {
                 
                 <View style={styles.inputs}>
                 
-                    {!mapVisibility && editProfileData.map((item, index) => {
+                    {!mapVisibility && userData.map((item, index) => {
                         return(
                         <View style={[styles.inputField, item.name==="Bio" ? {height: 75} : {alignItems:"center"}]} key={index}>
                             <Text style={styles.inputTitle} >{item.name}</Text>

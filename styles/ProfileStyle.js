@@ -20,7 +20,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "baseline",
-        paddingBottom: 20,
+        paddingBottom: 10,
+        borderColor: "white",
+        borderWidth: 0.5,
     },
     profilePicture:{
         borderRadius: 40,
@@ -38,6 +40,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginRight: 20,
+    },
+    profileData:{
+        borderColor: "white",
+        borderWidth: 0.5,
+        width: "100%",
     },
     headerButtons:{
         justifyContent: "space-between",

@@ -1,11 +1,26 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback} from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from '../styles/ProfileStyle';
 import { useSelector } from 'react-redux';
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '../firebase/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EditProfile from '../components/ModalScreens/EditProfile';
 import LightboxComponent from '../components/ModalScreens/LightboxComponent';
 import TweetsFeed from '../components/TweetsFeed';
+
+const getProfileData = async(uid, callback, callback2) => {
+  console.log("getting profile data")
+  const docRef = doc(db, "userinfo", uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    callback(docSnap.data());
+    callback2();
+  } else {
+    console.log("No such document!");
+  }
+}
 
 const Header = (props) => {
   return(
@@ -29,15 +44,32 @@ const Header = (props) => {
   )
 }
 
-
-
 const ProfileScreen = ({navigation}) => {
-
+  const uid = useSelector(state => state.uid);
   const initialImageSize = 80;
   const [imageSize, setImageSize] = useState(initialImageSize);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [lightboxVisibility, setLightboxVisibility] = useState(false);
+  const [isDataReady, setIsDataReady] = useState(false);
+  const [profileData, setProfileData] = useState({});
+
+  const toggleIsReady = () => {
+    setIsDataReady(true);
+  }
+
+  const setData = (data) => {
+    setProfileData(data);
+    console.log("----", profileData);
+  }
+
+  useEffect(()=>{
+    getProfileData(uid, setData, toggleIsReady);
+  }, []);
+
+  useEffect(() => {
+
+  }, [isDataReady]);
 
   const handleScroll = (e) => {
     const offsetY = e.nativeEvent.contentOffset.y
@@ -78,7 +110,6 @@ const ProfileScreen = ({navigation}) => {
           styles.subHeader,
           scrollOffset > 0 || scrollOffset < 0 ? {zIndex: 0} : {zIndex: 99} 
         ]}>
-      
       <TouchableWithoutFeedback
         onPress={() => toggleLightbox()}
       >
@@ -98,6 +129,23 @@ const ProfileScreen = ({navigation}) => {
       </TouchableOpacity>
         {modalVisibility ? <EditProfile toggleModal={toggleModal} /> : null}
       </View>
+
+      {profileData.additionalUserInfo &&
+        <View style={styles.profileData}>
+          <Text style={styles.text}>{profileData.additionalUserInfo.name}</Text>
+          <Text style={styles.text}>@{profileData.username}</Text>
+          <Text style={styles.text}>{profileData.additionalUserInfo.bio}</Text>
+          <View style={{flexDirection: "row"}}>
+            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.additionalUserInfo.location.substring(0, 25)}...</Text>
+            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.additionalUserInfo.website}...</Text>
+          </View>
+          <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>Born {profileData.additionalUserInfo.birthDate}...</Text>
+          <View style={{flexDirection: "row"}}>
+            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.following}</Text>
+            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.followers}</Text>
+          </View>
+        </View>
+      }
 
       <View>
       <TweetsFeed userID={userID} />
