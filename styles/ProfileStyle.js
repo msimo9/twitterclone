@@ -21,8 +21,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "baseline",
         paddingBottom: 10,
-        borderColor: "white",
-        borderWidth: 0.5,
     },
     profilePicture:{
         borderRadius: 40,
@@ -42,9 +40,10 @@ const styles = StyleSheet.create({
         marginRight: 20,
     },
     profileData:{
-        borderColor: "white",
-        borderWidth: 0.5,
         width: "100%",
+        paddingHorizontal: "5%",
+        borderBottomColor: "gray",
+        borderBottomWidth: 0.5,
     },
     headerButtons:{
         justifyContent: "space-between",
@@ -59,7 +58,38 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 20,
+    },
+    pf_name:{
+        color: "#FFFFFF",
+        fontWeight: "bold",
+        marginBottom: 2.5,
+        fontSize: 16,
+    },
+    pf_username:{
+        color: "gray",
+        fontSize: 14,
+        fontWeight: "500",
+        marginBottom: 10,
+    },
+    pf_bio:{
+        color: "#FFFFFF",
+        fontSize: 14,
+        fontWeight: "400",
+        marginBottom: 10,
+    },
+    pf_rest:{
+        color: "gray",
+        fontSize: 12,
+        fontWeight: "500",
+        marginBottom: 10,
+        marginRight: 20,
+    },
+    pf_numbers:{
+        color: "#FFFFFF",
+        marginRight: 3.5,
+        fontWeight: "bold",
     }
+
 
 });
 

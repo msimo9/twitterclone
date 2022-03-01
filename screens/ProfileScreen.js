@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback} from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Linking} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import styles from '../styles/ProfileStyle';
 import { useSelector } from 'react-redux';
@@ -91,6 +91,7 @@ const ProfileScreen = ({navigation}) => {
   }
   const userID = useSelector(state => state.uid);
   const profilePicture = useSelector(state => state.profilePicture);
+  const website = 'http://' + profileData.additionalUserInfo.website;
   return (
     <View
       style={[styles.container, lightboxVisibility ? {} : null]}
@@ -132,17 +133,29 @@ const ProfileScreen = ({navigation}) => {
 
       {profileData.additionalUserInfo &&
         <View style={styles.profileData}>
-          <Text style={styles.text}>{profileData.additionalUserInfo.name}</Text>
-          <Text style={styles.text}>@{profileData.username}</Text>
-          <Text style={styles.text}>{profileData.additionalUserInfo.bio}</Text>
-          <View style={{flexDirection: "row"}}>
-            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.additionalUserInfo.location.substring(0, 25)}...</Text>
-            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.additionalUserInfo.website}...</Text>
+          <Text style={styles.pf_name}>{profileData.additionalUserInfo.name}</Text>
+          <Text style={styles.pf_username}>@{profileData.username}</Text>
+          <Text style={styles.pf_bio}>{profileData.additionalUserInfo.bio}</Text>
+          <View style={{flexDirection: "row", alignItems: "baseline"}}>
+            <Ionicons style={{marginRight: 2.5}} name={"location-outline"} size={12} color={"gray"} />
+            <Text style={styles.pf_rest}>{profileData.additionalUserInfo.location.substring(0, 25)}...</Text>
+
+            <Ionicons style={{marginRight: 2.5}} name={"link-outline"} size={12} color={"gray"} />
+            <Text
+              style={[styles.pf_rest, {color: "#1DA1F2"}]}
+              onPress={() => Linking.openURL(website)}
+            >{profileData.additionalUserInfo.website}</Text>
           </View>
-          <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>Born {profileData.additionalUserInfo.birthDate}...</Text>
-          <View style={{flexDirection: "row"}}>
-            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.following}</Text>
-            <Text style={{color: "gray", fontWeight: "500", fontSize: 10, marginRight: 10}}>{profileData.followers}</Text>
+          <View style={{flexDirection: "row", alignItems: "baseline"}}>
+            <Ionicons style={{marginRight: 2.5}} name={"calendar-outline"} size={12} color={"gray"} />
+            <Text style={styles.pf_rest}>Born {profileData.additionalUserInfo.birthDate}</Text>
+          </View>
+          <View style={{flexDirection: "row", alignItems: "baseline"}}>
+            <Text style={styles.pf_numbers}>{profileData.following}</Text>
+            <Text style={styles.pf_rest}>Following</Text>
+            
+            <Text style={styles.pf_numbers}>{profileData.followers}</Text>
+            <Text style={styles.pf_rest}>Followers</Text>
           </View>
         </View>
       }
