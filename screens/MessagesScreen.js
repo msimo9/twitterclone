@@ -6,6 +6,7 @@ import HeaderTitle from '../components/HeaderTitle'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TextInput } from 'react-native-gesture-handler'
 import NewMessage from '../components/NewMessage'
+import NewMessageModal from '../components/ModalScreens/NewMessageModal'
 
 const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder}) => {
   return(
@@ -34,6 +35,9 @@ const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder})
 const MessagesScreen = () => {
   const [searchVisible, setSearchVisible] = useState(true);
   const [placeholder, setPlaceholder] = useState("Search for people and groups");
+  const [modalVisibility, setModalVisibility] = useState(false);
+
+  const toggleModalVisibility = () => {setModalVisibility(!modalVisibility)};
 
   const onFieldFocus = () => {
     setSearchVisible(false);
@@ -57,7 +61,8 @@ const MessagesScreen = () => {
     >
       <MessagesHeader onFieldFocus={onFieldFocus} onLoseFocus={onLoseFocus} searchVisible={searchVisible} placeholder={placeholder}/>
     </ScrollView>
-    <NewMessage />
+    {modalVisibility && <NewMessageModal action={toggleModalVisibility} visible={modalVisibility} /> }
+    <NewMessage action={toggleModalVisibility} />
     </View>
   )
 }

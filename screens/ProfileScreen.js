@@ -92,6 +92,7 @@ const ProfileScreen = ({navigation}) => {
   const userID = useSelector(state => state.uid);
   const profilePicture = useSelector(state => state.profilePicture);
   const website = 'http://' + profileData.additionalUserInfo.website;
+  console.log(profileData);
   return (
     <View
       style={[styles.container, lightboxVisibility ? {} : null]}
@@ -143,7 +144,7 @@ const ProfileScreen = ({navigation}) => {
             <Ionicons style={{marginRight: 2.5}} name={"link-outline"} size={12} color={"gray"} />
             <Text
               style={[styles.pf_rest, {color: "#1DA1F2"}]}
-              onPress={() => Linking.openURL(website)}
+              onPress={() => Linking.openURL(null)}
             >{profileData.additionalUserInfo.website}</Text>
           </View>
           <View style={{flexDirection: "row", alignItems: "baseline"}}>
