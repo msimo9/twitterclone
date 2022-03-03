@@ -32,7 +32,7 @@ const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder})
   )
 }
 
-const MessagesScreen = () => {
+const MessagesScreen = ({navigation}) => {
   const [searchVisible, setSearchVisible] = useState(true);
   const [placeholder, setPlaceholder] = useState("Search for people and groups");
   const [modalVisibility, setModalVisibility] = useState(false);
@@ -61,7 +61,7 @@ const MessagesScreen = () => {
     >
       <MessagesHeader onFieldFocus={onFieldFocus} onLoseFocus={onLoseFocus} searchVisible={searchVisible} placeholder={placeholder}/>
     </ScrollView>
-    {modalVisibility && <NewMessageModal action={toggleModalVisibility} visible={modalVisibility} /> }
+    {modalVisibility && <NewMessageModal navigation={navigation} action={toggleModalVisibility} visible={modalVisibility} /> }
     <NewMessage action={toggleModalVisibility} />
     </View>
   )
