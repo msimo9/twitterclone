@@ -156,7 +156,7 @@ const SocialInteractions = (props) => {
 
             <TouchableOpacity onPress={() => toggleInteraction("Comment")}>
                 <View style={styles.interactionView} >
-                    <Ionicons name={"chatbubble-outline"} size={16} color={commentColor} />
+                    <Ionicons name={commentColor !== "#ffffff" ? "chatbubble" :"chatbubble-outline"} size={16} color={commentColor} />
                     <Text style={[styles.interactionText, {color: commentColor}]}>{commentCount}</Text>
                 </View>
             </TouchableOpacity>
@@ -170,7 +170,7 @@ const SocialInteractions = (props) => {
 
             <TouchableOpacity onPress={() => toggleInteraction("Like")}>
                 <View style={styles.interactionView}>
-                    <Ionicons name={"heart-outline"} size={16} color={likeColor} />
+                    <Ionicons name={likeColor !== "#ffffff" ? "heart" :"heart-outline"} size={16} color={likeColor} />
                     <Text style={[styles.interactionText, {color: likeColor}]}>{likeCount}</Text>
                 </View>
             </TouchableOpacity>
