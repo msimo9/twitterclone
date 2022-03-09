@@ -1,4 +1,4 @@
-import {Text, View, ScrollView, Dimensions, Image } from 'react-native'
+import {Text, View, ScrollView, Dimensions, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../styles/MessageStyle'
 import RelativeProfilePicture from '../components/RelativeProfilePicture'
@@ -37,7 +37,7 @@ const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder})
   )
 }
 
-const RenderLastMessage = ({item}) => {
+const RenderLastMessage = ({item, navigation}) => {
   const [imageReady, setImageReady] = useState(false);
   const [fullName, setFullName] = useState("");
   const [userName, setUserName] = useState("");
@@ -65,25 +65,26 @@ const RenderLastMessage = ({item}) => {
   useEffect(() => {
     getProfileData();
   }, []);
-
   return(
-    <View style={styles.lastMessage}>
-      <Image source={{uri: image}} style={styles.lastMessageImage} />
-      <View>
-        <View style={{flexDirection: "row"}}>
-          <Text style={styles.fullName}>{fullName}</Text>
-          <Text style={{color: "gray"}}>@{userName}</Text>
-        </View>
+    <TouchableOpacity onPress={() => navigation.navigate("Conversation", {name: fullName, userID: item[0]})}>
+      <View style={styles.lastMessage}>
+        <Image source={{uri: image}} style={styles.lastMessageImage} />
+        <View>
+          <View style={{flexDirection: "row"}}>
+            <Text style={styles.fullName}>{fullName}</Text>
+            <Text style={{color: "gray"}}>@{userName}</Text>
+          </View>
 
-        <Text style={item[1].startsWith("https://firebasestorage.googleapis.com") ? {color: "gray", fontStyle: "italic"} : {color: "gray"}}>
-          {
-            item[1].startsWith("https://firebasestorage.googleapis.com") 
-            ? "Sent a photo." 
-            : item[1].substring(0, 25)
-          }
-        </Text>
+          <Text style={item[1].startsWith("https://firebasestorage.googleapis.com") ? {color: "gray", fontStyle: "italic"} : {color: "gray"}}>
+            {
+              item[1].startsWith("https://firebasestorage.googleapis.com") 
+              ? "Sent a photo." 
+              : item[1].substring(0, 25)
+            }
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -101,17 +102,19 @@ const MessagesScreen = ({navigation}) => {
     const querySnapshot = await getDocs(q);
     let messageArray = [];
     let lastMessages = [];
-    let receivers = [];
+    let senders = [];
     querySnapshot.forEach((doc) => {
       messageArray.push(doc.data());
     });
     messageArray.sort((a,b) => (a.time < b.time) ? 1 : ((b.time < a.time) ? -1 : 0));
 
     messageArray.forEach((doc) => {
-      if(uid === doc.senderID){
-        if(receivers.indexOf(doc.receiverID) === -1){
-          receivers.push(doc.receiverID);
-          lastMessages.push([doc.receiverID, doc.text]);
+      if(uid === doc.receiverID){
+          console.log(doc);
+        if(senders.indexOf(doc.senderID) === -1){
+          senders.push(doc.receiverID);
+          lastMessages.push([doc.senderID, doc.text]);
+          console.log(lastMessages[lastMessages.length-1])
         }
       }
     });
@@ -157,7 +160,7 @@ const MessagesScreen = ({navigation}) => {
       <View style={styles.messageContainer}>
         {lastMessages.map((item) => {
           return(
-            <RenderLastMessage item={item} />
+            <RenderLastMessage item={item} navigation={navigation} />
           )
         })}
       </View>
