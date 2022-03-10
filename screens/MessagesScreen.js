@@ -13,7 +13,7 @@ import { db } from '../firebase/firebase'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder}) => {
+const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder, filterUsers}) => {
   return(
     <View style={styles.scrollViewHeader}>
         <View style={styles.headerTopRow}>
@@ -30,6 +30,7 @@ const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder})
           onFocus={() => onFieldFocus()}
           onBlur={() => onLoseFocus()}
           autoFocus={false}
+          onChangeText={value => filterUsers(value)}
         />
         {searchVisible && <Ionicons name={"search-outline"} size={14} color={"gray"} style={styles.searchIcon}/>}
         </View>
@@ -37,7 +38,7 @@ const MessagesHeader = ({onFieldFocus, onLoseFocus, searchVisible, placeholder})
   )
 }
 
-const RenderLastMessage = ({item, navigation}) => {
+const RenderLastMessage = ({item, navigation, filter}) => {
   const [imageReady, setImageReady] = useState(false);
   const [fullName, setFullName] = useState("");
   const [userName, setUserName] = useState("");
@@ -65,6 +66,7 @@ const RenderLastMessage = ({item, navigation}) => {
   useEffect(() => {
     getProfileData();
   }, []);
+  if(filter === "" || fullName.startsWith(filter)){
   return(
     <TouchableOpacity onPress={() => navigation.navigate("Conversation", {name: fullName, userID: item[0]})}>
       <View style={styles.lastMessage}>
@@ -86,6 +88,11 @@ const RenderLastMessage = ({item, navigation}) => {
       </View>
     </TouchableOpacity>
   )
+  }else{
+    return(
+      <View></View>
+    )
+  }
 }
 
 const MessagesScreen = ({navigation}) => {
@@ -94,6 +101,7 @@ const MessagesScreen = ({navigation}) => {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [lastMessages, setLastMessages] = useState([]);
   const [messagesReady, setMessagesReady] = useState(false);
+  const [filter, setFilter] = useState("");
 
   const uid = useSelector(state => state.uid);
 
@@ -110,11 +118,9 @@ const MessagesScreen = ({navigation}) => {
 
     messageArray.forEach((doc) => {
       if(uid === doc.receiverID){
-          console.log(doc);
         if(senders.indexOf(doc.senderID) === -1){
           senders.push(doc.receiverID);
           lastMessages.push([doc.senderID, doc.text]);
-          console.log(lastMessages[lastMessages.length-1])
         }
       }
     });
@@ -145,6 +151,9 @@ const MessagesScreen = ({navigation}) => {
     setPlaceholder("Search for people and groups");
   }
 
+  const filterUsers = (value) => {
+    setFilter(value);
+  }
 
   return (
     <View style={{width: "100%", height: "100%"}}>
@@ -155,12 +164,12 @@ const MessagesScreen = ({navigation}) => {
       keyboardShouldPersistTaps={"never"}
       keyboardDismissMode={"on-drag"}
     >
-      <MessagesHeader onFieldFocus={onFieldFocus} onLoseFocus={onLoseFocus} searchVisible={searchVisible} placeholder={placeholder}/>
+      <MessagesHeader onFieldFocus={onFieldFocus} onLoseFocus={onLoseFocus} searchVisible={searchVisible} placeholder={placeholder} filterUsers={filterUsers} />
 
       <View style={styles.messageContainer}>
         {lastMessages.map((item) => {
           return(
-            <RenderLastMessage item={item} navigation={navigation} />
+            <RenderLastMessage item={item} navigation={navigation} filter={filter}/>
           )
         })}
       </View>

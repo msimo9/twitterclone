@@ -18,6 +18,7 @@ import CustomDrawer from '../components/CustomDrawer';
 import AddTweet from '../screens/AddTweet';
 import ProfileScreen from '../screens/ProfileScreen';
 import ConversationScreen from '../screens/ConversationScreen'
+import MessageProfileInfoScreen from '../screens/MessageProfileInfoScreen';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
@@ -38,6 +39,7 @@ const MainStackNavigator = () => {
             <Stack.Screen name={"Add"} component={AddTweet} />
             <Stack.Screen name={"Profile"} component={ProfileScreen} />
             <Stack.Screen name={"Conversation"} component={ConversationScreen} />
+            <Stack.Screen name={"MessageProfileInfo"} component={MessageProfileInfoScreen} />
         </Stack.Navigator>
     )
 }
